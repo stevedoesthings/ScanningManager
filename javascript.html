@@ -1,0 +1,201 @@
+<script>
+
+(function initializeGlobals() {
+  google.script.run.withSuccessHandler(initializeGlobals1).getSwitchListA();
+  google.script.run.withSuccessHandler(initializeGlobals2).getSwitchListB();
+  google.script.run.withSuccessHandler(initializeGlobals3).getShredPolicies();
+  google.script.run.withSuccessHandler(initializeGlobals4).getIndexList();
+  google.script.run.withSuccessHandler(initializeGlobals5).getScannerList();
+  google.script.run.withSuccessHandler(initializeGlobals6).getScannerShredBoxList();
+  google.script.run.withSuccessHandler(initializeGlobals7).getStorageLocationsList();
+  google.script.run.withSuccessHandler(initializeGlobals8).getStatusOptionsList();
+  google.script.run.withSuccessHandler(initializeGlobals9).getStoresList();
+})();
+
+function initializeGlobals1(switchList) {
+  window.SwitchListA = switchList;
+}
+function initializeGlobals2(switchList) {
+  window.SwitchListB = switchList;
+}
+function initializeGlobals3(switchList) {
+  window.ShredPolicies = switchList;
+}
+function initializeGlobals4(switchList) {
+  window.IndexList = switchList;
+}
+function initializeGlobals5(switchList) {
+  window.ScannerList = switchList;
+}
+function initializeGlobals6(switchList) {
+  window.ScannerShredBoxList = switchList;
+}
+function initializeGlobals7(switchList) {
+  window.StorageLocations = switchList;
+}
+function initializeGlobals8(switchList) {
+  window.StatusOptionsList = switchList;
+}
+function initializeGlobals9(switchList) {
+  window.StoresList = switchList;
+}
+
+function processDailys(dailys) {
+  var dailysArr = dailys.split('),');
+  dailysArr.shift();
+  var dailysArrLen = dailysArr.length;
+  
+  var shredPolicies = window.ShredPolicies;
+  var shredPoliciesLen = shredPolicies.length;
+  var indexList = window.IndexList;
+  var indexListLen = indexList.length;
+  var scannerList = window.ScannerList;
+  var scannerListLen = scannerList.length;
+  var scannerShredBoxList = window.ScannerShredBoxList;
+  var status = '';
+  
+  var singleScanStr, singleScanArr, folder, scanner, store, retentionPolicy, box;
+  var i = 1882;
+  
+  for( i; i <= dailysArrLen; i++ ) {
+    retentionPolicy = "";
+    box = "";
+    singleScanStr = dailysArr[i].toString();
+    singleScanArr = singleScanStr.split(',');
+    folder = singleScanArr[0];
+    scanner = singleScanArr[1];
+    store = singleScanArr[2];
+    var j = 0;
+      
+    for( j; j <= indexListLen; j++ ) {
+        //console.log(indexList);
+      if( folder == indexList[j] ) {
+        retentionPolicy = shredPolicies[j].toString();
+        console.log( j +" - "+ folder);
+        j = 0;
+        break;
+      } else { continue; }
+    }
+    
+    //console.log( "retentionPolicy: "+ retentionPolicy +" - folder: "+ folder +" - "+ singleScanStr);
+    //console.log(dailysArr);
+          
+    if( retentionPolicy == 'shred' ) {
+      status = 'to shred';
+      box = scanner + ' shred';
+    }
+    
+    if( retentionPolicy == 'store' ) {
+    
+      status = 'to store';
+      
+      if( folder == 'Account Payables' || folder == 'Account Receivables' ) {
+        if( JSON.stringify(store).indexOf("CHRY") > 0 || JSON.stringify(store).indexOf("Body Shop") > 0 ) {
+          box = 'AP/AR Chry/Body Shop';
+        } else {
+          box = 'AP/AR Nis/Maz';
+        }
+      }
+      
+      if( folder == 'Factory Statements' ) {
+        switch( store ) {
+          case 'CHRY':
+          box = 'Factory State Chry';
+            break;
+          case 'NIS':
+          box = 'Factory State Nis';
+            break;
+          case 'MAZ':
+          box = 'Factory State Maz';
+            break;
+          default:
+            box = 'taco';
+        }
+      }
+      
+      if( folder == 'Chry Sold Deals' || folder == 'Nis Sold Deals' || folder == 'Maz Sold Deals' ) {
+        box = folder;
+      }
+    }
+    //console.log("retentionPolicy: "+retentionPolicy);
+
+    //console.log(i, folder, scanner, store, retentionPolicy, box);
+    google.script.run.withSuccessHandler(consoleUpdate).updateDailyIndex( i, status, box );
+  }
+}
+
+function generateQRCode(txtTemp) {
+  var index = document.getElementById("chk2");
+  var dealer = document.getElementById("chk3");
+  var sCustomer = document.getElementById("startCustomer");
+  var eCustomer = document.getElementById("endCustomer");
+  var sDate = document.getElementById("startDate");
+  var eDate = document.getElementById("endDate");
+  var action = document.getElementById("actionsList");
+  var loction = document.getElementById("locationList");
+  var indexVal = index.value;
+  var dealerVal = dealer.value;
+  var sCustomerVal = sCustomer.value;
+  var eCustomerVal = eCustomer.value;
+  var sDateVal = sDate.value;
+  var eDateVal = eDate.value;
+  var actionsVal = action.value;
+  var loctionVal = loction.value;
+  
+  var GUID = guid();
+
+  var text = [];
+  
+  if( GUID != "") { text.push("GUID: "+GUID) }
+  if( indexVal != "") { text.push("Index: "+indexVal) }
+  if( dealerVal != "") { text.push("Dealership: "+dealerVal) }
+  if( sCustomerVal != "") { text.push("Start: "+sCustomerVal) }
+  if( eCustomerVal != "") { text.push("End: "+eCustomerVal) }
+  if( sDateVal != "") { text.push("Start Date: "+sDateVal) }
+  if( eDateVal != "") { text.push("End Date: "+eDateVal) }
+  if( actionsVal != "") { text.push("Action: "+actionsVal) }
+  if( loctionVal != "") { text.push("Location: "+loctionVal) }
+  
+  var qrcode = new QRCode(document.getElementById("qrcode"), {
+      text: txtTemp+"?page=wear",
+      width: 240,
+      height: 240,
+      colorDark : "#000000",
+      colorLight : "#ffffff",
+      correctLevel : QRCode.CorrectLevel.H
+  });
+  
+  index.value = "";
+  dealer.value = "";
+  sCustomer.value = "";
+  eCustomer.value = "";
+  sDate.value = "";
+  eDate.value = "";
+  action.value = "";
+  loction.value = "";
+  
+  console.log(text);
+  google.script.run.updateInventory(GUID, indexVal);
+}
+
+function guid() {
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
+function s4() {
+  return Math.floor((1 + Math.random()) * 0x10000)
+    .toString(16)
+    .substring(1);
+}
+
+function consoleUpdate(message) {
+  console.log(message);  
+  //console.log(JSON.stringify(message));
+  //console.log("taco test consoleUpdate");
+}
+
+function codeStart() {
+  document.getElementById('jsIdResult').value = guid();
+}
+</script>

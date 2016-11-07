@@ -1,0 +1,149 @@
+<!DOCTYPE html>    
+<html>
+  <head>
+  
+    <base target="_top">
+    
+    <!-- Import Google Icon Font -->
+    <?!= HtmlService.createHtmlOutputFromFile('iconfont').getContent(); ?>
+    
+    <!--Import jQuery before materialize.js-->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- Materialize JavaScript --> 
+    <?!= HtmlService.createHtmlOutputFromFile('materializejs').getContent(); ?>
+    <!-- Materialize CSS -->
+    <?!= HtmlService.createHtmlOutputFromFile('materializecss').getContent(); ?>
+    
+<script>
+  $(document).ready(function() {
+    $('select').material_select();
+    $(".button-collapse").sideNav();
+  });
+  
+  $('.datepicker').pickadate({
+    selectMonths: true, // Creates a dropdown to control month
+    selectYears: 15 // Creates a dropdown of 15 years to control year
+  });
+</script>    
+
+  </head>
+  <body class="light-blue lighten-5">
+  
+  <?var url = getScriptUrl();?>
+  <nav>
+    <div class="nav-wrapper  blue accent-2">
+      <a class="brand-logo"><img src="http://www.ipacauto.com/public/images/dealer-logo.png" style="max-height: 45px;margin-top: 8px;"></a>
+      <span data-activates="mobile-demo" class="hide-on-large-only button-collapse" id="fake-link-1"><i class="material-icons">menu</i></span>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="<?=url?>?page=CreateBoxLabel.html">Create Label</a></li>
+        <li><a href="<?=url?>?page=SearchIndexes.html">Search</a></li>
+      </ul>
+      <ul class="side-nav" id="mobile-demo">
+        <li><a href="<?=url?>?page=CreateBoxLabel.html">Create Label</a></li>
+        <li><a href="<?=url?>?page=SearchIndexes.html">Search</a></li>
+      </ul>
+    </div>
+  </nav>
+      
+  <!-- Create Box Label Card Start -->
+  
+      <div class="row">
+        <div class="col l4 offset-l4 m6 offset-m3 s12">
+          <div class="card darken-1 hoverable">
+            <div class="card-content">
+              <span class="card-title">Create Label</span>
+              <div class="row">
+                <form class="col s12">
+                  <div class="row">
+                   <div class="col s6">
+                    <label for="indexes">Indexes</label>
+                    <select id="indexes" multiple>
+                      <option value="" disabled selected></option>
+                      <option value="Account Payables">Account Payables</option>
+                      <option value="Account Receivables">Account Receivables</option>
+                      <option value="Cancellations">Cancellations</option>
+                      <option value="Chry Sold Deals">Chry Sold Deals</option>
+                      <option value="Close Out">Close Out</option>
+                      <option value="Dead Deals">Dead Deals</option>
+                      <option value="Dealer Trades">Dealer Trades</option>
+                      <option value="Deposits">Deposits</option>
+                      <option value="Factory Statements">Factory Statements</option>
+                      <option value="Funding Notices">Funding Notices</option>
+                      <option value="GAS">GAS</option>
+                      <option value="HR Medical">HR Medical</option>
+                      <option value="HR Misc.">HR Misc.</option>
+                      <option value="HR Workers Comp">HR Workers Comp</option>
+                      <option value="Incentives">Incentives</option>
+                      <option value="Maz Sold Deals">Maz Sold Deals</option>
+                      <option value="Nis Sold Deals">Nis Sold Deals</option>
+                      <option value="Parts Invoices">Parts Invoices</option>
+                      <option value="Payroll">Payroll</option>
+                      <option value="PDI">PDI</option>
+                      <option value="Personnel Files">Personnel Files</option>
+                      <option value="Reserve Statements">Reserve Statements</option>
+                      <option value="RO">RO</option>
+                    </select>
+                   </div>
+                   <div class="col s6">
+                    <label for="stores">Stores</label>
+                    <select id="stores" multiple>
+                      <option value="" disabled selected></option>
+                      <option value="Chrysler">Chrysler</option>
+                      <option value="Nissan">Nissan</option>
+                      <option value="Mazda">Mazda</option>
+                      <option value="Body Shop">Body Shop</option>
+                    </select>
+                   </div>
+                  </div>
+                  <div class="row">
+                    <label for="customer_name">Customer Name</label>
+                  </div>
+                  <div class="row">
+                      <label class="col s6">First</label>
+                      <label class="col s6">Last</label>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input id="r1edit" type="text">
+                    </div>
+                    <div class="input-field col s6">
+                      <input id="customer_name" type="text">
+                    </div>
+                  </div>
+                  <div class="row">
+                      <label>Date</label>
+                  </div>
+                  <div class="row">
+                      <label class="col s6">From</label>
+                      <label class="col s6">To</label>
+                  </div>
+                  <div class="row">
+                    <div class="input-field col s6">
+                      <input type="date" class="datepicker">
+                    </div>  
+                    <div class="input-field col s6">
+                      <input type="date" class="datepicker">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <label for="storage">Storage Location</label>
+                    <select id="storage" multiple>
+                      <option value="" disabled selected></option>
+                      <option value="SurePoint self storage">SurePoint self storage</option>
+                      <option value="Uncle Bob's self storage">Uncle Bob's self storage</option>
+                      <option value="Iron Mountain">Iron Mountain</option>
+                      <option value="Accounting Conference room">Accounting Conference room</option>
+                    </select>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card-action blue accent-1" style="height: 80px">
+              <a class="waves-effect waves-light btn right blue accent-3">Create</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+  </body>
+</html>
